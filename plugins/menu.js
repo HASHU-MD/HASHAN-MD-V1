@@ -228,7 +228,7 @@ cmd({
         if (response) {
           // Send image response
           await bot.sendMessage(from, {
-            image: { url: "https://o.uguu.se/JoMMGxeG.jpg" },
+            image: { url: "https://files.catbox.moe/vbo0vq.png" },
             caption: response.imageCaption
           }, { quoted: newMessage });
         } else {
