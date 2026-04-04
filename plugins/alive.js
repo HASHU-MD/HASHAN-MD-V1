@@ -27,14 +27,14 @@ async (conn, mek, m, { from, quoted, body, isCmd, command, args, q, isGroup, sen
 
      ⭕ 𝗙𝗢𝗟𝗟𝗢𝗪 𝗢𝗨𝗥 𝗪𝗛𝗔𝗧𝗦𝗔𝗣𝗣 𝗖𝗛𝗔𝗡𝗡𝗘𝗟
      
- *https://whatsapp.com/channel/0029VazhnLzK0IBdwXG4152o*
+*https://whatsapp.com/channel/0029VazhnLzK0IBdwXG4152o*
 
   
 > *𝗣𝗢𝗪𝗘𝗥𝗘𝗗 𝗕𝗬 𝗛𝗔𝗦𝗛𝗔𝗡-𝗠𝗗 𝗩𝗘𝗥𝗦𝗜𝗢𝗡 1 💐💙*`;
 
 
         await conn.sendMessage(from, { 
-            image: { url: `https://d.uguu.se/OBjsOZeT.jpg` },  // Image URL
+            image: { url: `https://o.uguu.se/JoMMGxeG.jpg` },  // Image URL
             caption: status,
             contextInfo: {
                 mentionedJid: [m.sender],
