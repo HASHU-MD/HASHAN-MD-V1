@@ -11,9 +11,9 @@
       "required": true
     },  
 
-    "ALIVE_IMG": {
-      "description": "Put your alive img here.",
-      "required": false
+    "AUTO_REPLY": {
+      "description": "true",
+      "required": true
     },
     
     "ALIVE_MSG": {
