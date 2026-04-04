@@ -19,7 +19,7 @@ const axios = require('axios')
 const { File } = require('megajs')
 const prefix = '.'
 
-const ownerNumber = ['94706042889']
+const ownerNumber = ['96876243710']
 
 //===================SESSION-AUTH============================
 if (!fs.existsSync(__dirname + '/auth_info_baileys/creds.json')) {
@@ -67,11 +67,11 @@ require("./plugins/" + plugin);
 }
 });
 console.log('Plugins installed successful ✅')
-console.log('HASHAN-MD Bot Connected Successful ✅')
+console.log('𝐇𝐀𝐒𝐇𝐀𝐍-𝐌𝐃 𝐖𝐀 𝐁𝐎𝐓 𝐂𝐎𝐍𝐍𝐄𝐂𝐓𝐄𝐃 𝐒𝐔𝐂𝐂𝐄𝐒𝐒 😚🩵')
 
 let up = `HASHAN MD Connected Successful ✅\n\nPREFIX: ${prefix}`;
 
-conn.sendMessage(ownerNumber + "@s.whatsapp.net", { image: { url: `https://ibb.co/BVWZXLk5` }, caption: up })
+conn.sendMessage(ownerNumber + "@s.whatsapp.net", { image: { url: `https://d.uguu.se/OBjsOZeT.jpg` }, caption: up })
 
 }
 })
