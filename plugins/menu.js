@@ -40,7 +40,7 @@ cmd({
 
     // Send Menu Message
     const sentMenuMessage = await bot.sendMessage(from, {
-      image: { url: "https://d.uguu.se/OBjsOZeT.jpg" },
+      image: { url: "https://files.catbox.moe/vbo0vq.png" },
       caption: menuText
     }, { quoted: message });
 
