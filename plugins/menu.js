@@ -25,14 +25,14 @@ cmd({
 ╰═════════════════⚆
 │💮 *LIST MENU*
 │   ───────
-│ _1_ *❂ᴅᴏᴡɴʟᴏᴀᴅ menu❂*
-│ _2_ *❂ᴏᴡɴᴇʀ menu❂*
-│ _3_ *❂ɢʀᴏᴜᴘ ᴍᴇɴᴜ❂*
-│ _4_ *❂ᴄᴏɴᴠᴇʀᴛ menu❂*
-│ _5_ *❂ᴀɪ ᴍᴇɴᴜ❂*
-│ _6_ *❂ꜱᴇᴀʀᴄʜ menu❂*
-│ _7_ *❂ꜰᴜɴ menu❂*
-│ _8_ *❂ʙᴜɢ menu❂*
+│ _1_ *❂ ᴅᴏᴡɴʟᴏᴀᴅ menu❂*
+│ _2_ *❂ ᴏᴡɴᴇʀ menu❂*
+│ _3_ *❂ ɢʀᴏᴜᴘ ᴍᴇɴᴜ❂*
+│ _4_ *❂ ᴄᴏɴᴠᴇʀᴛ menu❂*
+│ _5_ *❂ ᴀɪ ᴍᴇɴᴜ❂*
+│ _6_ *❂ ꜱᴇᴀʀᴄʜ menu❂*
+│ _7_ *❂ ꜰᴜɴ menu❂*
+│ _8_ *❂ ʙᴜɢ menu❂*
 ╰═════════════════⚆
 *🌟 Reply the Number you want to select*
 
@@ -228,7 +228,7 @@ cmd({
         if (response) {
           // Send image response
           await bot.sendMessage(from, {
-            image: { url: "https://i.ibb.co/PwTkwNQ/20241209-212640.jpg" },
+            image: { url: "https://o.uguu.se/JoMMGxeG.jpg" },
             caption: response.imageCaption
           }, { quoted: newMessage });
         } else {
