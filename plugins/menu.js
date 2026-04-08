@@ -6,7 +6,7 @@ const axios = require('axios')
 
 
 cmd({
-  pattern: "menu",
+  pattern: "menu3",
   desc: "Commands panel",
   react: '📜',
   filename: __filename
@@ -16,13 +16,12 @@ cmd({
   try {
     // Menu Text
     const menuText = `
-   ╭═════════════════⚆
-> │ *ᴄʀᴇᴀᴛᴏʀ* : ᴍʀ ʜᴀꜱʜᴜᴜ
-> │ *ᴠᴇʀꜱɪᴏɴ* : v0.1
-> │ *ᴜᴘᴛɪᴍᴇ*  : ${runtime(process.uptime())}
-> │ *ʀᴀᴍ ᴜꜱᴀɢᴇ* : ${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)}MB
-> │ *ʜᴏꜱᴛ ɴᴀᴍᴇ* : ${require('os').hostname()}
-   ╰═════════════════⚆
+> *ᴄʀᴇᴀᴛᴏʀ* : ᴍʀ ʜᴀꜱʜᴜᴜ
+> *ᴠᴇʀꜱɪᴏɴ* : v0.1
+> *ᴜᴘᴛɪᴍᴇ*  : ${runtime(process.uptime())}
+> *ʀᴀᴍ ᴜꜱᴀɢᴇ* : ${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)}MB
+> *ʜᴏꜱᴛ ɴᴀᴍᴇ* : ${require('os').hostname()}
+  
 
 │💮 *LIST MENU*
 │   ───────
