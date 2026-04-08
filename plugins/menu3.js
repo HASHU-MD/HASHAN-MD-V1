@@ -29,13 +29,13 @@ cmd(
     }
 
     let menuText = `
-𝐇𝐀𝐒𝐇𝐀𝐍-𝐌𝐃 𝐂𝐎𝐌𝐌𝐀𝐍𝐃𝐒 𝐋𝐈𝐒𝐓 💫
+𝗛𝗔𝗦𝗛𝗔𝗡-𝗠𝗗 𝗖𝗢𝗠𝗠𝗔𝗡𝗗𝗦 𝗟𝗜𝗦𝗧 😚💗
 Total Commands: *${totalCommands}*
 `;
 
     for (const category of Object.keys(commandMap).sort()) {
       menuText += `\n┣━━ ⪼ *${category}*\n`;
-      menuText += commandMap[category].map(cmd => `┃✨ ${cmd}`).join;
+      menuText += commandMap[category].map(cmd => `┃✨ ${cmd}`).join("\n") +;
     }
 
     menuText += `╰━━━━━━━━━━━━━━━━━━━━━━⬣
