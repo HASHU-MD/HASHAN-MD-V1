@@ -2,7 +2,7 @@ const { cmd, commands } = require("../command");
 
 cmd(
   {
-    pattern: "list",
+    pattern: "menu",
     react: "📝",
     alias: ["help", "commands"],
     desc: "Show all available commands with total count",
@@ -29,13 +29,13 @@ cmd(
     }
 
     let menuText = `
-Caption ekak danna lassana
+𝐇𝐀𝐒𝐇𝐀𝐍-𝐌𝐃 𝐂𝐎𝐌𝐌𝐀𝐍𝐃𝐒 𝐋𝐈𝐒𝐓 💫
 Total Commands: *${totalCommands}*
 `;
 
     for (const category of Object.keys(commandMap).sort()) {
       menuText += `\n┣━━ ⪼ *${category}*\n`;
-      menuText += commandMap[category].map(cmd => `┃🔸 ${cmd}`).join("\n") + "\n";
+      menuText += commandMap[category].map(cmd => `┃✨ ${cmd}`).join("\n") + "\n";
     }
 
     menuText += `╰━━━━━━━━━━━━━━━━━━━━━━⬣
