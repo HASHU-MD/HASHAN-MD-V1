@@ -35,7 +35,7 @@ Total Commands: *${totalCommands}*
 
     for (const category of Object.keys(commandMap).sort()) {
       menuText += `\n┣━━ ⪼ *${category}*\n`;
-      menuText += commandMap[category].map(cmd => `┃✨ ${cmd}`).join("\n") +;
+      menuText += commandMap[category].map(cmd => `┃💗 ${cmd}`)("\n") + "\n";
     }
 
     menuText += `╰━━━━━━━━━━━━━━━━━━━━━━⬣
