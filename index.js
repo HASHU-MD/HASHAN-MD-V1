@@ -1,155 +1,87 @@
-const {
-    default: makeWASocket,
-    useMultiFileAuthState,
-    DisconnectReason,
-    jidNormalizedUser,
-    getContentType,
-    fetchLatestBaileysVersion,
-    Browsers
-} = require('@whiskeysockets/baileys')
-
-const { getBuffer, getGroupAdmins, getRandom, h2k, isUrl, Json, runtime, sleep, fetchJson } = require('./lib/functions')
-const fs = require('fs')
-const P = require('pino')
-const config = require('./config')
-const qrcode = require('qrcode-terminal')
-const util = require('util')
-const { sms, downloadMediaMessage } = require('./lib/msg')
-const axios = require('axios')
-const { File } = require('megajs')
-const prefix = '.'
-
-// OTP Plugin import
-const { OtpPlugin, handleOtpCommands } = require('./plugins/otp_manager')
-
-const ownerNumber = ['96876243710']
-
-// Express Server Setup (For Auto-Deploy & 24/7 Live)
-const express = require("express");
+const express = require('express');
+const axios = require('axios');
+const fs = require('fs');
+const { spawn } = require('child_process');
 const app = express();
-const port = process.env.PORT || 8000;
 
 app.use(express.json());
 
-app.get("/", (req, res) => {
-    res.send("HASHAN-MD OTP Bot is running ✅");
-});
+// CONFIGURATION
+const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
+const GITHUB_USER = "HASHU-MD";
+const DB_REPO = "HASHAN-SESSION-DB";
+const SESSION_FILE = './session/creds.json';
 
-app.listen(port, () => {
-    console.log(`Server listening on port ${port}`);
-});
-
-//===================SESSION-AUTH============================
-if (!fs.existsSync(__dirname + '/auth_info_baileys/creds.json')) {
-    if (!config.SESSION_ID) {
-        console.log('Please add your session to SESSION_ID env !!');
-    } else {
-        const sessdata = config.SESSION_ID
-        const filer = File.fromURL(`https://mega.nz/file/${sessdata}`)
-        filer.download((err, data) => {
-            if (err) throw err
-            fs.writeFile(__dirname + '/auth_info_baileys/creds.json', data, () => {
-                console.log("Session downloaded ✅")
-            })
-        })
+// --- 1. SESSION SYNC FUNCTION ---
+async function syncSession() {
+    if (!fs.existsSync('./session')) fs.mkdirSync('./session');
+    
+    const dbUrl = `https://raw.githubusercontent.com/${GITHUB_USER}/${DB_REPO}/main/creds.json`;
+    try {
+        const response = await axios.get(dbUrl, {
+            headers: { Authorization: `token ${GITHUB_TOKEN}` }
+        });
+        // වැදගත්: GitHub එකෙන් එන්නේ Object එකක් නම් එය stringify කර සේව් කරන්න
+        fs.writeFileSync(SESSION_FILE, JSON.stringify(response.data, null, 2));
+        console.log("✅ Session Synced from GitHub!");
+        return true;
+    } catch (e) {
+        console.log("❌ No existing session found.");
+        return false;
     }
 }
 
-async function connectToWA() {
-    console.log("Connecting wa bot 🧬...");
-    const { state, saveCreds } = await useMultiFileAuthState(__dirname + '/auth_info_baileys/')
-    var { version } = await fetchLatestBaileysVersion()
+// --- 2. START BOT FUNCTION ---
+function startBot() {
+    console.log("🚀 Starting HASHAN-MD-V1...");
+    const child = spawn('node', ['main.js'], { // ඔබේ බොට්ගේ පටන් ගන්නා ෆයිල් එක main.js නම්
+        stdio: 'inherit'
+    });
 
-    const conn = makeWASocket({
-        logger: P({ level: 'silent' }),
-        printQRInTerminal: false,
-        browser: Browsers.macOS("Chrome"),
-        syncFullHistory: true,
-        auth: state,
-        version
-    })
-
-    conn.ev.on('connection.update', (update) => {
-        const { connection, lastDisconnect } = update
-        if (connection === 'close') {
-            if (lastDisconnect.error && lastDisconnect.error.output && lastDisconnect.error.output.statusCode !== DisconnectReason.loggedOut) {
-                connectToWA()
-            }
-        } else if (connection === 'open') {
-            console.log('😼 Installing Plugins... ')
-            const path = require('path');
-            fs.readdirSync("./plugins/").forEach((plugin) => {
-                if (path.extname(plugin).toLowerCase() == ".js") {
-                    require("./plugins/" + plugin);
-                }
-            });
-            console.log('Plugins installed successful ✅')
-            console.log('𝐇𝐀𝐒𝐇𝐀𝐍-𝐌𝐃 𝐖𝐀 𝐁𝐎𝐓 𝐂𝐎𝐍𝐍𝐄𝐂𝐓𝐄𝐃 𝐒𝐔𝐂𝐂𝐄𝐒𝐒 😚🩵')
-
-            // OTP Webhook start
-            try {
-                OtpPlugin.startWebhook(conn);
-                console.log('OTP Webhook Server started ✅');
-            } catch (e) {
-                console.log('Webhook error: ', e);
-            }
-
-            let up = `HASHAN MD Connected Successful ✅\n\nPREFIX: ${prefix}`;
-            conn.sendMessage(ownerNumber + "@s.whatsapp.net", { 
-                image: { url: `https://d.uguu.se/OBjsOZeT.jpg` }, 
-                caption: up 
-            })
-        }
-    })
-
-    conn.ev.on('creds.update', saveCreds)
-
-    conn.ev.on('messages.upsert', async (mek) => {
-        mek = mek.messages[0]
-        if (!mek.message) return
-        mek.message = (getContentType(mek.message) === 'ephemeralMessage') ? mek.message.ephemeralMessage.message : mek.message
-        if (mek.key && mek.key.remoteJid === 'status@broadcast') return
-        
-        const m = sms(conn, mek)
-        const type = getContentType(mek.message)
-        const from = mek.key.remoteJid
-        const body = (type === 'conversation') ? mek.message.conversation : (type === 'extendedTextMessage') ? mek.message.extendedTextMessage.text : (type == 'imageMessage') && mek.message.imageMessage.caption ? mek.message.imageMessage.caption : (type == 'videoMessage') && mek.message.videoMessage.caption ? mek.message.videoMessage.caption : ''
-        
-        const isCmd = body.startsWith(prefix)
-        const command = isCmd ? body.slice(prefix.length).trim().split(' ').shift().toLowerCase() : ''
-        const args = body.trim().split(/ +/).slice(1)
-        const q = args.join(' ')
-        const isGroup = from.endsWith('@g.us')
-        const sender = mek.key.fromMe ? (conn.user.id.split(':')[0] + '@s.whatsapp.net' || conn.user.id) : (mek.key.participant || mek.key.remoteJid)
-        const senderNumber = sender.split('@')[0]
-        const isOwner = ownerNumber.includes(senderNumber)
-        
-        const reply = (teks) => {
-            conn.sendMessage(from, { text: teks }, { quoted: mek })
-        }
-
-        // OTP Commands call
-        const msgData = { chat: from, body: body, reply: reply };
-        await handleOtpCommands(conn, msgData);
-
-        const events = require('./command')
-        const cmdName = isCmd ? body.slice(1).trim().split(" ")[0].toLowerCase() : false;
-        
-        if (isCmd) {
-            const cmd = events.commands.find((cmd) => cmd.pattern === (cmdName)) || events.commands.find((cmd) => cmd.alias && cmd.alias.includes(cmdName))
-            if (cmd) {
-                if (cmd.react) conn.sendMessage(from, { react: { text: cmd.react, key: mek.key } })
-                try {
-                    cmd.function(conn, mek, m, { from, body, isCmd, command, args, q, isGroup, sender, senderNumber, isOwner, reply });
-                } catch (e) {
-                    console.error("[PLUGIN ERROR] " + e);
-                }
-            }
-        }
-    })
+    child.on('close', (code) => {
+        console.log(`Bot process exited with code ${code}. Restarting...`);
+        startBot();
+    });
 }
 
-// 4 second delay before connecting to ensure everything is ready
-setTimeout(() => {
-    connectToWA()
-}, 4000);
+// --- 3. WEB API FOR AUTO DEPLOY ---
+app.post('/deploy', async (req, res) => {
+    const { sessionId } = req.body;
+    if (!sessionId) return res.status(400).send({ error: "No Session ID!" });
+
+    try {
+        const url = `https://api.github.com/repos/${GITHUB_USER}/${DB_REPO}/contents/creds.json`;
+        let sha;
+        try {
+            const check = await axios.get(url, { headers: { Authorization: `token ${GITHUB_TOKEN}` } });
+            sha = check.data.sha;
+        } catch (e) { sha = undefined; }
+
+        // Session එක Upload කිරීම
+        await axios.put(url, {
+            message: "Deploy Session via Web",
+            content: Buffer.from(sessionId).toString('base64'),
+            sha: sha
+        }, { headers: { Authorization: `token ${GITHUB_TOKEN}` } });
+
+        res.send({ success: true, message: "Deploying... Bot will start in 10 seconds." });
+        
+        // සෙමින් Restart කිරීම
+        setTimeout(() => { process.exit(0); }, 5000); 
+
+    } catch (error) {
+        res.status(500).send({ error: error.message });
+    }
+});
+
+// --- 4. SERVER RUN & AUTO SYNC ---
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, async () => {
+    console.log(`Web Dashboard active on port ${PORT}`);
+    const hasSession = await syncSession();
+    if (hasSession) {
+        startBot();
+    } else {
+        console.log("⚠️ Waiting for Session ID via Web Dashboard to start...");
+    }
+});
