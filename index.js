@@ -9,7 +9,7 @@ app.use(express.json());
 // CONFIGURATION
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
 const GITHUB_USER = "HASHU-MD";
-const DB_REPO = "HASHAN-SESSION-DB";
+const DB_REPO = "HASHAN-SESSION-DB1";
 const SESSION_FILE = './session/creds.json';
 
 // --- 1. SESSION SYNC FUNCTION ---
